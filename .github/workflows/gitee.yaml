@@ -16,3 +16,5 @@ jobs:
           dst_token: ${{ secrets.dst_token }}
           static_list: 'logs'
           debug: true
+          force_update: true
+
