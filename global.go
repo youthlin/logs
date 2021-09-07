@@ -4,8 +4,8 @@ import "context"
 
 func getLogger() Logger {
 	// callinfo.Skip <- [0]defaultFactory.GetLogger <- [1]logs.getLogger <- [2]logs.Debug <- [3]app
-	//                        withSkip+1
-	// withSkip=2
+	//                        AddSkip+1
+	// AddSkip=2
 	return defaultFactory.GetLogger(AddSkip(2))
 }
 func Name() string {

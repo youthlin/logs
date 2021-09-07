@@ -65,8 +65,9 @@ func (l *logger) GetKVs() []interface{} {
 	return l.kvs
 }
 func (l *logger) Skip(skip int) Logger {
-	l.skip = skip
-	return l
+	copy := l.clone()
+	copy.skip = skip
+	return copy
 }
 func (l *logger) GetSkip() int {
 	return l.skip
@@ -80,13 +81,13 @@ func (l *logger) Error(fmt string, args ...interface{}) { l.Log(LevelError, fmt,
 
 func (l *logger) Log(lvl Level, format string, args ...interface{}) {
 	if adaptor := l.factory.Adaptor; adaptor != nil {
-		if lvl >= GetLevel(l.name, l.config) {
+		if lvl >= l.level() {
 			adaptor.Log(NewMsg(l, lvl, format, args...))
 		}
 	}
 }
 
-func GetLevel(loggerName string, c *Config) Level {
-	lvl := c.Trie().Search(loggerName)
+func (l *logger) level() Level {
+	lvl := l.config.trie.Search(l.name)
 	return lvl.(Level)
 }

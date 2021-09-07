@@ -26,9 +26,10 @@ type (
 	Adaptor interface {
 		Log(Message)
 	}
+	// Config level config
 	Config struct {
-		Root    Level
-		Loggers map[string]Level
+		Root    Level            `json:"root" yaml:"root"`
+		Loggers map[string]Level `json:"loggers" yaml:"loggers"`
 		trie    *trie.Tire
 	}
 	// LoggerOpt logger option. 日志配置
@@ -70,13 +71,3 @@ type (
 		Error(fmt string, args ...interface{})
 	}
 )
-
-// WithName get logger with name
-func WithName(name string) Option {
-	return func(lo *LoggerOpt) { lo.Name = &name }
-}
-
-// AddSkip get logger with skip frames(relative to factory.GetLogger)
-func AddSkip(skip int) Option {
-	return func(lo *LoggerOpt) { lo.AddSkip += skip }
-}

@@ -47,6 +47,11 @@ func (f *factory) SetConfig(c *Config) {
 	f.config = c
 }
 
+// GetLogger 获取 Logger
+//
+// Option:
+//  - WithName 直接使用给定的名称；如有，会忽略 AddSkip
+//  - AddSkip 获取直接调用本方法处再往上 n 层的地方的包名
 func (f *factory) GetLogger(opts ...Option) Logger {
 	lo := new(LoggerOpt)
 	for _, opt := range opts {
@@ -59,4 +64,14 @@ func (f *factory) GetLogger(opts ...Option) Logger {
 		name = callinfo.Skip(lo.AddSkip + 1).PkgName
 	}
 	return newLogger(f, withName(name))
+}
+
+// WithName get logger with name
+func WithName(name string) Option {
+	return func(lo *LoggerOpt) { lo.Name = &name }
+}
+
+// AddSkip get logger with skip frames(relative to factory.GetLogger)
+func AddSkip(skip int) Option {
+	return func(lo *LoggerOpt) { lo.AddSkip += skip }
 }

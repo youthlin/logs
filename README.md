@@ -10,71 +10,64 @@ go get -u github.com/youthlin/logs
 go mod edit -replace github.com/youthlin/logs@latest=gitee.com/youthlin/logs@latest&&go mod tidy
 ```
 
-## examples
-
-### simplest
+## api
 ```go
-var log = logs.GetLogger()
-func main(){
-    log.Debug("Hello %s", "World")
-}
-```
+// ---------- use global function ----------
+logs.Name() // return the loggers name, default package name
+logs.Ctx(ctx) // return a logger with ctx, which can add some key-value pairs via kv.Add(ctx)
+logs.With(kvs...) // retuan a logger with key-value pairs
+logs.Trace(fmt, args...)
+logs.Debug(fmt, args...)
+logs.Info(fmt, args...)
+logs.Warn(fmt, args...)
+logs.Error(fmt, args...)
 
-### args print as json
-```go
-func foo(){
-    myLogArg, err := ...
-    log.Info("some value = %s | err = %s", arg.JSON(myLogArg), arg.ErrJSON("%+v", err))
-}
-```
+// ---------- use Logger interface ----------
+var log = logs.GetLogger() // get a logger, which name is package name
+log.Ctx(ctx).
+    With(kvs...).
+    Debug(fmt, args...)
 
-### with key-value
-```go
-var log = logs.GetLogger()
-func main(){
-    log.With("key", 42).Debug("I have a prefix `key=42`")
-    foo()
-    log.Info("This msg do NOT have any key-value prefies")
-}
-func foo(){
-    var log = log.With("key", "value") // new var
-    log.Debug("my prefix is key=value")
-    log.Debug("my prefix is key=value, too")
-    bar(context.Background())
-}
-func bar(ctx context.Context){
-    ctx = kv.Add(ctx, "key", "value")
-    log.Ctx(ctx).Info("key-value may from ctx")
-}
-```
+// ----------  set log level for each package ----------
+logs.SetConfig(&logs.Config{
+    Root: logs.LevelError,
+    Loggers: map[string]logs.Level{
+        "github.com": logs.Info,
+        "github.com/youthlin": logs.Debug,
+    },
+})
+// abc -> use root level: error
+logs.GetLogger(logs.WithName("abc")).
+    Warn("not call adaptor.Log so won't print")
+logs.GetLogger(logs.WithName("abc")).
+    Error("to adaptor")
 
-### package-level
-```go
-var log logs.Logger
-func init(){
-    logs.SetConfig(logs.Config{
-        Root: logs.Warn,
-        Loggers: map[string]logs.Level{
-            "github.com/youthlin/app": logs.Debug,
-        },
-    })
-    log = logs.GetLogger()
-}
-func main(){
-    log.Debug("debug level")
-}
-```
+// github.com/some -> use github.com level: info
+logs.GetLogger(logs.WithName("github.com/some")).
+    Debug("debug not print")
+logs.GetLogger(logs.WithName("github.com/some")).
+    Info("info message")
 
-### log Adaptor
+// github.com/youthlin -> debug
+logs.GetLogger(logs.WithName("github.com/youthlin")).
+    Debug("debug message")
 
-```go
-var log logs.Logger
-func init(){
-    // Adaptor is a interface which contains only one method: Log(logs.Message)
-    logs.SetAdaptor(logs.DiscardAdaptor())
-    log = logs.GetLogger()
-}
-func main(){
-    log.Debug("use custom adaptor to logging")
+
+// ---------- use adaptor ----------
+logs.SetAdaptor(logs.DiscardAdaptor)
+logs.Info("log message was process by adaptor")
+// a dicard adaptor not ptint any log
+
+// import _ "github.com/youthlin/z"
+logs.Info("import github.com/youthlin/z will register a ZapAdaptor, so this message would log by zap")
+
+// or use zap via custom config(Encoder/WriteSyncer/Core)
+zapConfig := z.DefaultConfig() // or config from yaml/json file
+z.SetConfig(zapConfig)
+logs.With(kvs...).Ctx(ctx).Info("format", args...)
+
+// custom your adaptor
+type Adaptor interface(){
+    Log(Message)
 }
 ```
