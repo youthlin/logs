@@ -18,6 +18,6 @@ func TestUnmarshalConfig(t *testing.T) {
 	}`), &c)
 	logs.Assert(err == nil)
 	t.Log(c)
-	logs.Assert(c.Root==logs.Warn)
-	logs.Assert(reflect.DeepEqual(c.Loggers, map[string]logs.Level{"github.com/youthlin": logs.Info}))
+	logs.Assert(c.Root==logs.LevelWarn)
+	logs.Assert(reflect.DeepEqual(c.Loggers, map[string]logs.Level{"github.com/youthlin": logs.LevelInfo}))
 }

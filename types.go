@@ -16,6 +16,7 @@ type (
 		LoggerName() string
 		Level() Level
 		Time() time.Time
+		Skip() int
 		Ctx() context.Context
 		Kvs() []interface{}
 		Msg() string
@@ -32,9 +33,10 @@ type (
 	}
 	// LoggerOpt logger option. 日志配置
 	LoggerOpt struct {
-		Name *string
+		Name    *string
+		AddSkip int
 	}
-	// Option used to get logger
+	// Option used to get logger. 目的是获取 Logger Name
 	Option func(*LoggerOpt)
 
 	// Factory used to create logger. 获取 Logger 的日志工厂
@@ -45,11 +47,22 @@ type (
 	}
 	// Logger is a interface to logging. 打日志接口
 	Logger interface {
+		// Name return the Logger's name.
+		// 不同名称的 Logger 可以有不同的日志级别
 		Name() string
+		// Ctx attach context to this Logger. see kv.Add(ctx, kvs...).
+		// 在 Logger 上附加 ctx, 可以使用 kv.Add 为 ctx 附带 kv
 		Ctx(ctx context.Context) Logger
 		GetCtx() context.Context
+		// With attach key-values to this Logger. 在 Logger 上附带 kv
 		With(kvs ...interface{}) Logger
 		GetKVs() []interface{}
+		// Skip relative to below methods(Trace/Debug...)
+		// 相对于调用以下 Trace/Debug 再往上跳过 skip 层堆栈
+		// 如果 Adaptor 会打印堆栈，应该带上这个 skip
+		Skip(skip int) Logger
+		GetSkip() int
+
 		Trace(fmt string, args ...interface{})
 		Debug(fmt string, args ...interface{})
 		Info(fmt string, args ...interface{})
@@ -61,4 +74,9 @@ type (
 // WithName get logger with name
 func WithName(name string) Option {
 	return func(lo *LoggerOpt) { lo.Name = &name }
+}
+
+// AddSkip get logger with skip frames(relative to factory.GetLogger)
+func AddSkip(skip int) Option {
+	return func(lo *LoggerOpt) { lo.AddSkip += skip }
 }

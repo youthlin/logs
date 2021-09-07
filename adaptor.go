@@ -43,7 +43,7 @@ func (s *simple) Log(m Message) {
 	}
 	// simple.Log <- logger.Log <- logger.Info
 	//      1            2            3
-	call := callinfo.Skip(3)
+	call := callinfo.Skip(3 + m.Skip())
 	fmt.Fprintf(
 		s.Writer,
 		fmt.Sprintf(

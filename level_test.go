@@ -8,7 +8,7 @@ import (
 )
 
 func TestLevel(t *testing.T) {
-	lvl := logs.Trace
+	lvl := logs.LevelTrace
 	b, err := json.Marshal(lvl)
 	logs.AssertThen(len(b) > 0, func() {
 		t.Logf("to json: %s", b)

@@ -6,33 +6,33 @@ import (
 )
 
 const (
-	Unset Level = iota
-	All
-	Trace
-	Debug
-	Info
-	Warn
-	Error
-	None
+	LevelUnset Level = iota
+	LevelAll
+	LevelTrace
+	LevelDebug
+	LevelInfo
+	LevelWarn
+	LevelError
+	LevelNone
 )
 
 func (lvl Level) String() string {
 	switch lvl {
-	case Unset:
+	case LevelUnset:
 		return "Unset"
-	case All:
+	case LevelAll:
 		return "All"
-	case Trace:
+	case LevelTrace:
 		return "Trace"
-	case Debug:
+	case LevelDebug:
 		return "Debug"
-	case Info:
+	case LevelInfo:
 		return "Info"
-	case Warn:
+	case LevelWarn:
 		return "Warn"
-	case Error:
+	case LevelError:
 		return "Error"
-	case None:
+	case LevelNone:
 		return "None"
 	}
 	return fmt.Sprintf("Level(%d)", lvl)
@@ -45,21 +45,21 @@ func (lvl Level) MarshalText() (text []byte, err error) {
 func (lvl *Level) UnmarshalText(text []byte) error {
 	switch strings.ToLower(string(text)) {
 	case "all":
-		*lvl = All
+		*lvl = LevelAll
 	case "trace":
-		*lvl = Trace
+		*lvl = LevelTrace
 	case "debug":
-		*lvl = Debug
+		*lvl = LevelDebug
 	case "info":
-		*lvl = Info
+		*lvl = LevelInfo
 	case "warn":
-		*lvl = Warn
+		*lvl = LevelWarn
 	case "error":
-		*lvl = Error
+		*lvl = LevelError
 	case "none":
-		*lvl = None
+		*lvl = LevelNone
 	default:
-		*lvl = Unset
+		*lvl = LevelUnset
 	}
 	return nil
 }

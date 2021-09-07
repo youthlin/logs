@@ -9,7 +9,7 @@ import (
 
 func TestDiscardAdaptor(t *testing.T) {
 	a := logs.DiscardAdaptor()
-	a.Log(logs.NewMsg(logs.GetLogger(), logs.Debug, "hello %s", "world"))
+	a.Log(logs.NewMsg(logs.GetLogger(), logs.LevelDebug, "hello %s", "world"))
 }
 
 func TestSimpleAdaptor(t *testing.T) {
@@ -17,8 +17,8 @@ func TestSimpleAdaptor(t *testing.T) {
 	a := logs.SimpleAdaptor(&sb)
 	func() { // app: logs.Debug()
 		func() { // logger: logger.Log
-			a.Log(logs.NewMsg(logs.GetLogger(), logs.Debug, "hello %s", "world"))
-			a.Log(logs.NewMsg(logs.GetLogger().With("key", 42), logs.Debug, "with key-value pairs"))
+			a.Log(logs.NewMsg(logs.GetLogger(), logs.LevelDebug, "hello %s", "world"))
+			a.Log(logs.NewMsg(logs.GetLogger().With("key", 42), logs.LevelDebug, "with key-value pairs"))
 		}()
 	}()
 	content := sb.String()

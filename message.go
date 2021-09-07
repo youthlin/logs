@@ -11,6 +11,7 @@ type Msg struct {
 	name  string
 	level Level
 	time  time.Time
+	skip  int
 	ctx   context.Context
 	kvs   []interface{}
 	fmt   string
@@ -23,6 +24,7 @@ func NewMsg(l Logger, lvl Level, fmt string, args ...interface{}) *Msg {
 		name:  l.Name(),
 		level: lvl,
 		time:  time.Now(),
+		skip:  l.GetSkip(),
 		ctx:   l.GetCtx(),
 		kvs:   l.GetKVs(),
 		fmt:   fmt,
@@ -38,6 +40,9 @@ func (m *Msg) Level() Level {
 }
 func (m *Msg) Time() time.Time {
 	return m.time
+}
+func (m *Msg) Skip() int {
+	return m.skip
 }
 func (m *Msg) Ctx() context.Context {
 	return m.ctx

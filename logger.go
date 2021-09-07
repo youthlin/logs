@@ -11,6 +11,7 @@ var _ Logger = (*logger)(nil)
 type logger struct {
 	*factory
 	name string
+	skip int
 	ctx  context.Context
 	kvs  []interface{}
 }
@@ -19,18 +20,6 @@ type newLoggerOpt func(*logger)
 
 func withName(name string) newLoggerOpt {
 	return func(l *logger) { l.name = name }
-}
-
-func withOpt(opts ...Option) newLoggerOpt {
-	lo := new(LoggerOpt)
-	for _, opt := range opts {
-		opt(lo)
-	}
-	return func(l *logger) {
-		if lo.Name != nil {
-			l.name = *lo.Name
-		}
-	}
 }
 
 func newLogger(f *factory, opts ...newLoggerOpt) *logger {
@@ -46,6 +35,7 @@ func (l *logger) clone() *logger {
 	return &logger{
 		factory: l.factory,
 		name:    l.name,
+		skip:    l.skip,
 		ctx:     l.ctx,
 		kvs:     append(make([]interface{}, 0, len(l.kvs)), l.kvs...),
 	}
@@ -74,12 +64,19 @@ func (l *logger) With(kvs ...interface{}) Logger {
 func (l *logger) GetKVs() []interface{} {
 	return l.kvs
 }
+func (l *logger) Skip(skip int) Logger {
+	l.skip = skip
+	return l
+}
+func (l *logger) GetSkip() int {
+	return l.skip
+}
 
-func (l *logger) Trace(fmt string, args ...interface{}) { l.Log(Trace, fmt, args...) }
-func (l *logger) Debug(fmt string, args ...interface{}) { l.Log(Debug, fmt, args...) }
-func (l *logger) Info(fmt string, args ...interface{})  { l.Log(Info, fmt, args...) }
-func (l *logger) Warn(fmt string, args ...interface{})  { l.Log(Warn, fmt, args...) }
-func (l *logger) Error(fmt string, args ...interface{}) { l.Log(Error, fmt, args...) }
+func (l *logger) Trace(fmt string, args ...interface{}) { l.Log(LevelTrace, fmt, args...) }
+func (l *logger) Debug(fmt string, args ...interface{}) { l.Log(LevelDebug, fmt, args...) }
+func (l *logger) Info(fmt string, args ...interface{})  { l.Log(LevelInfo, fmt, args...) }
+func (l *logger) Warn(fmt string, args ...interface{})  { l.Log(LevelWarn, fmt, args...) }
+func (l *logger) Error(fmt string, args ...interface{}) { l.Log(LevelError, fmt, args...) }
 
 func (l *logger) Log(lvl Level, format string, args ...interface{}) {
 	if adaptor := l.factory.Adaptor; adaptor != nil {

@@ -6,7 +6,9 @@ import (
 	"github.com/youthlin/logs/pkg/callinfo"
 )
 
-func GetLogger(opts ...Option) Logger { return defaultFactory.GetLogger(opts...) }
+func GetLogger(opts ...Option) Logger {
+	return defaultFactory.GetLogger(append(opts, AddSkip(1))...)
+}
 
 var defaultFactory = NewSimpleFactory()
 
@@ -22,23 +24,18 @@ var _ Factory = (*factory)(nil)
 
 type factory struct {
 	Adaptor
-	config      *Config
-	pkgNameSkip int
+	config *Config
 }
 
 func NewSimpleFactory() Factory {
-	return NewFactory(SimpleAdaptor(os.Stdout), LevelConfig(Debug), 1)
+	return NewFactory(SimpleAdaptor(os.Stdout), LevelConfig(LevelDebug))
 }
 
 // NewFactory return a new logger factory.
-// @param a is a logger adaptor, which really emit the log
-// @param pkgNameSkip used to get caller's pkg name(as logger name),
-// it's value means frames to `GetLogger`
-func NewFactory(a Adaptor, c *Config, pkgNameSkip int) Factory {
+func NewFactory(a Adaptor, c *Config) Factory {
 	Assert(a != nil, "Adaptor can not be nil")
 	Assert(c != nil, "Config can not be nil")
-	Assert(pkgNameSkip >= 0, "pkgNameSkip can not less than 0")
-	return &factory{Adaptor: a, pkgNameSkip: pkgNameSkip, config: c}
+	return &factory{Adaptor: a, config: c}
 }
 
 func (f *factory) SetAdaptor(a Adaptor) {
@@ -49,7 +46,17 @@ func (f *factory) SetConfig(c *Config) {
 	Assert(c != nil, "Config can not be nil")
 	f.config = c
 }
+
 func (f *factory) GetLogger(opts ...Option) Logger {
-	pkgName := callinfo.Skip(f.pkgNameSkip + 1).PkgName
-	return newLogger(f, withName(pkgName), withOpt(opts...))
+	lo := new(LoggerOpt)
+	for _, opt := range opts {
+		opt(lo)
+	}
+	name := ""
+	if lo.Name != nil {
+		name = *lo.Name
+	} else {
+		name = callinfo.Skip(lo.AddSkip + 1).PkgName
+	}
+	return newLogger(f, withName(name))
 }
