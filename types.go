@@ -2,7 +2,6 @@ package logs
 
 import (
 	"context"
-	"time"
 
 	"github.com/youthlin/logs/pkg/trie"
 )
@@ -15,7 +14,6 @@ type (
 	Message interface {
 		LoggerName() string
 		Level() Level
-		Time() time.Time
 		Skip() int
 		Ctx() context.Context
 		Kvs() []interface{}

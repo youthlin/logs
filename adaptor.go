@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/youthlin/logs/pkg/callinfo"
 	"github.com/youthlin/logs/pkg/kv"
@@ -49,7 +50,7 @@ func (s *simple) Log(m Message) {
 		fmt.Sprintf(
 			// [2006-01-02 15:04:05.000| Info|github.com/youthlin/logs/pkg/adaptor|file:line]	k=v Hello, World
 			"[%s|%5s|%s|%s:%d]\t%s%s\n",
-			m.Time().Format("2006-01-02 15:04:05.000"),
+			time.Now().Format("2006-01-02 15:04:05.000"),
 			m.Level(),
 			m.LoggerName(),
 			call.ShortFileName(),

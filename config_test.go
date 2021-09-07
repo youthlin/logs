@@ -11,13 +11,13 @@ import (
 func TestUnmarshalConfig(t *testing.T) {
 	var c logs.Config
 	err := json.Unmarshal([]byte(`{
-		"Root": "Warn",
-		"Loggers": {
+		"root": "Warn",
+		"loggers": {
 			"github.com/youthlin": "Info"
 		}
 	}`), &c)
 	logs.Assert(err == nil)
 	t.Log(c)
-	logs.Assert(c.Root==logs.LevelWarn)
+	logs.Assert(c.Root == logs.LevelWarn)
 	logs.Assert(reflect.DeepEqual(c.Loggers, map[string]logs.Level{"github.com/youthlin": logs.LevelInfo}))
 }

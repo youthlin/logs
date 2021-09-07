@@ -9,6 +9,9 @@ go get -u github.com/youthlin/logs
 # 国内镜像
 go mod edit -replace github.com/youthlin/logs@latest=gitee.com/youthlin/logs@latest&&go mod tidy
 ```
+> gitee 镜像：[gitee.com/youthlin/logs](https://gitee.com/youthlin/logs)
+>
+> 鸣谢 仓库同步工具 https://github.com/Yikun/hub-mirror-action
 
 ## api
 ```go

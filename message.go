@@ -2,7 +2,6 @@ package logs
 
 import (
 	"context"
-	"time"
 )
 
 var _ Message = (*Msg)(nil)
@@ -10,7 +9,6 @@ var _ Message = (*Msg)(nil)
 type Msg struct {
 	name  string
 	level Level
-	time  time.Time
 	skip  int
 	ctx   context.Context
 	kvs   []interface{}
@@ -23,7 +21,6 @@ func NewMsg(l Logger, lvl Level, fmt string, args ...interface{}) *Msg {
 	return &Msg{
 		name:  l.Name(),
 		level: lvl,
-		time:  time.Now(),
 		skip:  l.GetSkip(),
 		ctx:   l.GetCtx(),
 		kvs:   l.GetKVs(),
@@ -37,9 +34,6 @@ func (m *Msg) LoggerName() string {
 }
 func (m *Msg) Level() Level {
 	return m.level
-}
-func (m *Msg) Time() time.Time {
-	return m.time
 }
 func (m *Msg) Skip() int {
 	return m.skip
