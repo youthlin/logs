@@ -1,9 +1,13 @@
 # logs
-logs is a logging package, which support logging level(diffrent package could has diffrent level).
+logs is a logging facade, which supports logging level(diffrent package could has diffrent level),
+and it supports any logging implementation(std log/zap, etc) by Adaptor interface.
+支持为每个包设置日志级别的一个日志门面，可以通过 Adaptor 接口对接标准 log/zap 等任意日志实现。
 
 ## import
 ```shell
 go get -u github.com/youthlin/logs
+# 国内镜像
+go mod edit -replace github.com/youthlin/logs@latest=gitee.com/youthlin/logs@latest&&go mod tidy
 ```
 
 ## examples

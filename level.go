@@ -38,6 +38,10 @@ func (lvl Level) String() string {
 	return fmt.Sprintf("Level(%d)", lvl)
 }
 
+func (lvl Level) MarshalText() (text []byte, err error) {
+	return []byte(lvl.String()), nil
+}
+
 func (lvl *Level) UnmarshalText(text []byte) error {
 	switch strings.ToLower(string(text)) {
 	case "all":
