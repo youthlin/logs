@@ -88,6 +88,6 @@ func (l *logger) Log(lvl Level, format string, args ...interface{}) {
 }
 
 func (l *logger) level() Level {
-	lvl := l.config.trie.Search(l.name)
+	lvl := l.config.Trie().Search(l.name)
 	return lvl.(Level)
 }
