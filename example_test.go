@@ -45,7 +45,7 @@ func TestSimaple(t *testing.T) {
 }
 
 func TestConfig(t *testing.T) {
-	logs.SetConfig(&logs.Config{
+	logs.SetLoggerLevel(&logs.LoggerLevel{
 		Root: logs.LevelWarn,
 		Loggers: map[string]logs.Level{
 			"github.com/youthlin/logs": logs.LevelDebug,

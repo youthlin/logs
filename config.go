@@ -2,12 +2,12 @@ package logs
 
 import "github.com/youthlin/logs/pkg/trie"
 
-func LevelConfig(lvl Level) *Config {
+func LevelConfig(lvl Level) *LoggerLevel {
 	Assert(lvl > LevelUnset, "root level must set")
-	return &Config{Root: lvl}
+	return &LoggerLevel{Root: lvl}
 }
 
-func (c *Config) Trie() *trie.Tire {
+func (c *LoggerLevel) Trie() *trie.Tire {
 	if c.trie == nil {
 		root := trie.NewTire(c.Root)
 		for name, lvl := range c.Loggers {

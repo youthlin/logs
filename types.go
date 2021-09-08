@@ -24,8 +24,8 @@ type (
 	Adaptor interface {
 		Log(Message)
 	}
-	// Config level config
-	Config struct {
+	// LoggerLevel level config
+	LoggerLevel struct {
 		Root    Level            `json:"root" yaml:"root"`
 		Loggers map[string]Level `json:"loggers" yaml:"loggers"`
 		trie    *trie.Tire
@@ -41,7 +41,7 @@ type (
 	// Factory used to create logger. 获取 Logger 的日志工厂
 	Factory interface {
 		SetAdaptor(Adaptor)
-		SetConfig(*Config)
+		SetLoggerLevel(*LoggerLevel)
 		GetLogger(opts ...Option) Logger
 	}
 	// Logger is a interface to logging. 打日志接口

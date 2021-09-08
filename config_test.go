@@ -9,7 +9,7 @@ import (
 )
 
 func TestUnmarshalConfig(t *testing.T) {
-	var c logs.Config
+	var c logs.LoggerLevel
 	err := json.Unmarshal([]byte(`{
 		"root": "Warn",
 		"loggers": {

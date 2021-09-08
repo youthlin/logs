@@ -16,15 +16,15 @@ func SetFactory(f Factory) {
 	Assert(f != nil, "Factory can not be nil")
 	defaultFactory = f
 }
-func GetFactory() Factory  { return defaultFactory }
-func SetAdaptor(a Adaptor) { defaultFactory.SetAdaptor(a) }
-func SetConfig(c *Config)  { defaultFactory.SetConfig(c) }
+func GetFactory() Factory      { return defaultFactory }
+func SetAdaptor(a Adaptor)     { defaultFactory.SetAdaptor(a) }
+func SetLoggerLevel(c *LoggerLevel) { defaultFactory.SetLoggerLevel(c) }
 
 var _ Factory = (*factory)(nil)
 
 type factory struct {
 	Adaptor
-	config *Config
+	config *LoggerLevel
 }
 
 func NewSimpleFactory() Factory {
@@ -32,7 +32,7 @@ func NewSimpleFactory() Factory {
 }
 
 // NewFactory return a new logger factory.
-func NewFactory(a Adaptor, c *Config) Factory {
+func NewFactory(a Adaptor, c *LoggerLevel) Factory {
 	Assert(a != nil, "Adaptor can not be nil")
 	Assert(c != nil, "Config can not be nil")
 	return &factory{Adaptor: a, config: c}
@@ -42,7 +42,7 @@ func (f *factory) SetAdaptor(a Adaptor) {
 	Assert(a != nil, "Adaptor can not be nil")
 	f.Adaptor = a
 }
-func (f *factory) SetConfig(c *Config) {
+func (f *factory) SetLoggerLevel(c *LoggerLevel) {
 	Assert(c != nil, "Config can not be nil")
 	f.config = c
 }

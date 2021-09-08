@@ -3,6 +3,12 @@ logs is a logging facade, which supports logging level(diffrent package could ha
 and it supports any logging implementation(std log/zap, etc) by Adaptor interface.
 支持为每个包设置日志级别的一个日志门面，可以通过 Adaptor 接口对接标准 log/zap 等任意日志实现。
 
+[![sync-to-gitee](https://github.com/youthlin/logs/actions/workflows/gitee.yaml/badge.svg)](https://github.com/youthlin/logs/actions/workflows/gitee.yaml)
+[![test](https://github.com/youthlin/logs/actions/workflows/test.yaml/badge.svg)](https://github.com/youthlin/logs/actions/workflows/test.yaml)
+[![codecov](https://codecov.io/gh/youthlin/logs/branch/master/graph/badge.svg?token=LE6SP5D9jf)](https://codecov.io/gh/youthlin/logs)
+[![Go Report Card](https://goreportcard.com/badge/github.com/youthlin/logs)](https://goreportcard.com/report/github.com/youthlin/logs)
+[![Go Reference](https://pkg.go.dev/badge/github.com/youthlin/logs.svg)](https://pkg.go.dev/github.com/youthlin/logs)
+
 ## import
 ```shell
 go get -u github.com/youthlin/logs
@@ -32,7 +38,7 @@ log.Ctx(ctx).
     Debug(fmt, args...)
 
 // ----------  set log level for each package ----------
-logs.SetConfig(&logs.Config{
+logs.SetLoggerLevel(&logs.LoggerLevel{
     Root: logs.LevelError,
     Loggers: map[string]logs.Level{
         "github.com": logs.Info,
